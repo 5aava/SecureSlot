@@ -23,9 +23,9 @@ Our Super Prize is 100.0000 EOS
 ## Rules
 We have made for you a super cool safe slot machine. \
 There is always a BIG chance to WIN.\
-Our super prize gets the one who dropped result = 777 or < 10
+Our super prize gets the one who dropped result = 777 or < 1
 ```cpp
-    // BINGO !!!
+    // BINGO !!! ~ 0.02 %
     if(result == 777 || result < 1 ) {
         sendtokens(from);
     }
