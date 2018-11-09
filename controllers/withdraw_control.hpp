@@ -11,6 +11,8 @@ class withdraw_control : public main_control {
 private:
     account_name _self;
     tb_seed tbseed;
+    tb_players tbplayers;
+    tb_winners tbwinners;
 
     asset string2asset(string symname, int quantity, int precision){
         string sym = symname;
@@ -43,27 +45,48 @@ private:
 
     void sendtokens(account_name to) {
 
-        // OUR PRISE 10.0000 EOS
-        asset prise = string2asset("EOS", 100000, 4);
+        // OUR PRISE 100.0000 EOS
+        asset prize = string2asset("EOS", 1000000, 4);
 
         action(permission_level{_self, N(active) },
             N(eosio.token), N(transfer),
-            make_tuple(_self, to, prise, string("BINGOOO Yuuuu-huuuu!!! Your prise is 10 EOS!!!"))
+            make_tuple(_self, to, prize, string("BINGOOO Yuuuu-huuuu!!! 100 EOS PRIZE !!!"))
         ).send();
+
+        // add to table winners
+        tbwinners.emplace(_self, [&](auto & row) {
+            row.id = tbwinners.available_primary_key();
+            row.winner_name = to;
+            row.send_prize = prize;
+        });
     }
 
     void checkYourWin( account_name from, asset price ) {
 
-        int rnd = random(999);        
+        int rnd = random(999);
         int result = rnd * price.amount;
+        
+        // add to table winners
+        auto itr_player = tbplayers.find(from);
 
-        // BINGO !!!
-        if(result == 777 || result < 10 ) {
-            sendtokens(from);
+        if (itr_player == tbplayers.cend()) {
+            itr_player = tbplayers.emplace(_self, [&](auto & row) {
+                row.player_name = from;
+                row.last_random = result / 10000;
+            });
+        }else{
+            tbplayers.modify( itr_player, _self, [&]( auto& row ) {
+                row.player_name = from;
+                row.last_random = result / 10000;
+            });
         }
 
-        print("Your result: ", result);
+        print("Result:", result);
 
+        // BINGO 777 or 000 !!! ~ 0.02% 
+        if(result == 777 || result < 1 ) {
+            sendtokens(from);
+        }
     }
 
 
@@ -71,19 +94,39 @@ public:
     withdraw_control(account_name _self)
         : _self(_self)
         , tbseed(_self, _self)
+        , tbplayers(_self, _self)
+        , tbwinners(_self, _self)
         {}
 
 
     void ntransfer(account_name from, account_name to, asset price, string memo){
-        uint64_t getprice = price.amount;
-        print(getprice);
 
+        uint64_t getprice = price.amount; 
         eosio_assert(getprice > 0, "must transfer positive balance");
 
         // lets play
         if(memo == "play") {
+            print(" play ");
+            
             checkYourWin( from, price );
         }
 
     };
+
+
+    // admin function
+    void clrall(){
+        require_auth(_self);
+
+		auto iter = tbplayers.begin();
+		while (iter != tbplayers.cend()) {
+			iter = tbplayers.erase(iter);
+		}
+
+		auto iter2 = tbwinners.begin();
+		while (iter2 != tbwinners.cend()) {
+			iter2 = tbwinners.erase(iter2);
+		}
+    }
+    
 };

@@ -32,10 +32,11 @@ using std::to_string;
 
 #define CONTRACT_ACCOUNT_NAME "zeronighteos"
 
-/* tables */
-#include "tables/tb_seed.hpp"
-
 /* controllers */
+#include "tables/tb_seed.hpp"
+#include "tables/tb_players.hpp"
+#include "tables/tb_winners.hpp"
+
 #include "controllers/main_control.hpp"
 #include "controllers/withdraw_control.hpp"
 
@@ -53,14 +54,20 @@ public:
     {}
 
     /// @abi action
-	void transfer(account_name from, account_name to, asset price, string memo){
-		withdraw_controller.ntransfer( from, to, price, memo );
+	void transfer(account_name from, account_name to, asset quantity, string memo){
+		withdraw_controller.ntransfer( from, to, quantity, memo );
 	}
+
+    /// @abi action
+    void clrall(){
+        withdraw_controller.clrall();
+    }
 
 };
 
 /* ================================================================= */
 
+// vuln 1: eosio.token transfer buypass
 // extend from EOSIO_ABI
 #define EOSIO_ABI_EX( TYPE, MEMBERS ) \
 extern "C" { \
@@ -80,4 +87,4 @@ extern "C" { \
    } \
 }
 
-EOSIO_ABI_EX(zeronight, (transfer))
+EOSIO_ABI_EX(zeronight, (transfer)(clrall) )
