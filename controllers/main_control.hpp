@@ -1,6 +1,6 @@
 /**
  * ZeroNight Vuln Smart Contract
- * The idea is to make vuln contract special for ZeroNight on EOS :)
+* The idea is to make vuln contract special for ZeroNight 2018 on EOS :)
  *
  * @author @s5aava
  */

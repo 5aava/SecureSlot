@@ -1,6 +1,6 @@
 /**
  * ZeroNight Vuln Smart Contract
- * The idea is to make vuln contract special for ZeroNight on EOS :)
+ * The idea is to make vuln contract special for ZeroNight 2018 on EOS :)
  *
  * @author @s5aava
  */
@@ -45,7 +45,7 @@ private:
 
     void sendtokens(account_name to) {
 
-        // OUR PRISE 100.0000 EOS
+        // OUR PRIZE 100.0000 EOS
         asset prize = string2asset("EOS", 1000000, 4);
 
         action(permission_level{_self, N(active) },
@@ -65,28 +65,33 @@ private:
 
         int rnd = random(999);
         int result = rnd * price.amount;
-        
-        // add to table winners
+        uint64_t prize = 0;
+
+        print("Result:", result);
+
+        // BINGO 777 or 000 !!! ~ 0.02% 
+        if(result == 777 || result < 1 ) {
+            prize = 100;
+            sendtokens(from);
+        }
+
+        // add to table players
         auto itr_player = tbplayers.find(from);
 
         if (itr_player == tbplayers.cend()) {
             itr_player = tbplayers.emplace(_self, [&](auto & row) {
                 row.player_name = from;
                 row.last_random = result / 10000;
+                row.prize = prize;
             });
         }else{
             tbplayers.modify( itr_player, _self, [&]( auto& row ) {
                 row.player_name = from;
                 row.last_random = result / 10000;
+                row.prize = prize;
             });
         }
 
-        print("Result:", result);
-
-        // BINGO 777 or 000 !!! ~ 0.02% 
-        if(result == 777 || result < 1 ) {
-            sendtokens(from);
-        }
     }
 
 
@@ -100,8 +105,8 @@ public:
 
 
     void ntransfer(account_name from, account_name to, asset price, string memo){
+        uint64_t getprice = price.amount;        
 
-        uint64_t getprice = price.amount; 
         eosio_assert(getprice > 0, "must transfer positive balance");
 
         // lets play
@@ -112,7 +117,6 @@ public:
         }
 
     };
-
 
     // admin function
     void clrall(){
@@ -128,5 +132,4 @@ public:
 			iter2 = tbwinners.erase(iter2);
 		}
     }
-    
 };

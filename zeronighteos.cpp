@@ -1,6 +1,6 @@
 /**
  * ZeroNight Vuln Smart Contract
- * The idea is to make vuln contract special for ZeroNight on EOS :)
+* The idea is to make vuln contract special for ZeroNight 2018 on EOS :)
  *
  * @author @s5aava
  */
@@ -15,20 +15,16 @@
 #include <cstdlib>
 #include <stdlib.h>
 
-using eosio::key256;
-using eosio::indexed_by;
-using eosio::const_mem_fun;
 using eosio::asset;
-using eosio::vector;
-using eosio::permission_level;
-using eosio::unpack_action_data;
 using eosio::action;
 using eosio::name;
-using eosio::symbol_type;
-using eosio::string_to_symbol;
 using eosio::print;
 using std::string;
 using std::to_string;
+using eosio::permission_level;
+using eosio::symbol_type;
+using eosio::string_to_symbol;
+
 
 #define CONTRACT_ACCOUNT_NAME "zeronighteos"
 
@@ -67,7 +63,6 @@ public:
 
 /* ================================================================= */
 
-// vuln 1: eosio.token transfer buypass
 // extend from EOSIO_ABI
 #define EOSIO_ABI_EX( TYPE, MEMBERS ) \
 extern "C" { \
