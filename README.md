@@ -30,5 +30,10 @@ Our super prize gets the one who dropped result = 777 or < 1
         sendtokens(from);
     }
 ```
+
+## Frontend
+![Slot Frontend](//https://github.com/5aava/SecureSlot/blob/master/slotunity.png "Slot Frontend")
+
+
 ---
 by @s5aava with love
