@@ -32,7 +32,7 @@ Our super prize gets the one who dropped result = 777 or < 1
 ```
 
 ## Frontend
-![Slot Frontend](//raw.githubusercontent.com/5aava/SecureSlot/master/slotunity.png "Slot Frontend")
+![Slot Frontend](//raw.githubusercontent.com/5aava/SecureSlot/master/slotunity.png "Slot Frontend") 
 
 
 ---
